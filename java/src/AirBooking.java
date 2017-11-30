@@ -314,46 +314,81 @@ public class AirBooking{
                 }
             } while (true);
 
-            System.out.print("Enter your full name: ");
-            String fullName = br.readLine();
+			String fullName;
+			do {
+				System.out.print("Enter your full name: ");
+				fullName = br.readLine();
+				if (fullName.length() == 0) {
+					System.out.println("Name cannot be empty");
+				}
+				else {
+					break;
+				}
+			} while (true);
 
             int m;
 			do { 
                 System.out.print("Enter your birth month: ");
-				String month = br.readLine();
-				m = Integer.parseInt(month);
-				if (m < 1 || m > 12) {
-					System.out.println("\nPlease enter a value between 1 and 12.\n");	
+                
+                try {
+					String month = br.readLine();
+					m = Integer.parseInt(month);
+					if (m < 1 || m > 12) {
+						System.out.println("\nInvalid Input. " + m + " isn't between 1 and 12");	
+					}
+					else {
+						break;
+					}
+				} catch (Exception e) {
+					System.out.println("\nInvalid Input. Please enter a number(s)");
 				}
-			} while (m < 1 || m > 12);
+			} while (true);
 			
 			int d;
 			do { 
                 System.out.print("Enter your birth day: ");
-				String day = br.readLine();
-				d = Integer.parseInt(day);
-				if (d < 1 || d > 31) {
-					System.out.println("\nPlease enter a value between 1 and 31.\n");	
+                
+                try {
+					String day = br.readLine();
+					d = Integer.parseInt(day);
+					if (d < 1 || d > 31) {
+						System.out.println("\nInvalid Input. " + d + " isn't between 1 and 31.\n");	
+					}
+					else {
+						break;
+					}
+				} catch (Exception e) {
+					System.out.println("\nInvalid Input. Please enter a number(s)");
 				}
-			} while (d < 1 || d > 31);
+			} while (true);
 	
 			int y;
 			do { 
                 System.out.print("Enter your birth year: ");
-				String year = br.readLine();
-				y = Integer.parseInt(year);
-				if (y < 1900 || y > 2020) {
-					System.out.println("\nPlease enter a value greater than 1900 and less than 2020.\n");
+                
+                try {
+					String year = br.readLine();
+					y = Integer.parseInt(year);
+					if (y < 1900 || y > 2020) {
+						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.\n");
+					}
+					else {
+						break;
+					}
+				} catch (Exception e) {
+					System.out.println("\nInvalid Input. Please enter a number(s)");
 				}
-			} while (y < 1900 || y > 2020);
-
+			} while (true);
 			String date = m + "/" + d + "/" + y;
 
             System.out.print("Enter your country of origin:  ");
             String country = br.readLine();
 
-            String query = "";
-			int rowCount = esql.executeQueryAndPrintResult(query);
+			// Test Query
+            String query = "SELECT P.pID, P.fullName ";
+            query += "FROM Passenger P ";
+			int rowCount = esql.getCurrSeqVal(query);
+			// int rowCount = esql.executeQueryAndPrintResult(query);
 			System.out.println("total row(s): " + rowCount);
 			if (rowCount == 0) {
 				System.out.println();
@@ -375,34 +410,57 @@ public class AirBooking{
             int m;
 			do { 
                 System.out.print("Enter the departure month: ");
-				String month = br.readLine();
-				m = Integer.parseInt(month);
-				if (m < 1 || m > 12) {
-					System.out.println("\nPlease enter a value between 1 and 12.\n");	
+                
+                try {
+					String month = br.readLine();
+					m = Integer.parseInt(month);
+					if (m < 1 || m > 12) {
+						System.out.println("\nInvalid Input. " + m + " isn't between 1 and 12");	
+					}
+					else {
+						break;
+					}
+				} catch (Exception e) {
+					System.out.println("\nInvalid Input. Please enter a number(s)");
 				}
-			} while (m < 1 || m > 12);
+			} while (true);
 			
 			int d;
 			do { 
                 System.out.print("Enter the departure day: ");
-				String day = br.readLine();
-				d = Integer.parseInt(day);
-				if (d < 1 || d > 31) {
-					System.out.println("\nPlease enter a value between 1 and 31.\n");	
+                
+                try {
+					String day = br.readLine();
+					d = Integer.parseInt(day);
+					if (d < 1 || d > 31) {
+						System.out.println("\nInvalid Input. " + d + " isn't between 1 and 31.\n");	
+					}
+					else {
+						break;
+					}
+				} catch (Exception e) {
+					System.out.println("\nInvalid Input. Please enter a number(s)");
 				}
-			} while (d < 1 || d > 31);
+			} while (true);
 	
 			int y;
 			do { 
                 System.out.print("Enter the departure year: ");
-				String year = br.readLine();
-				y = Integer.parseInt(year);
-				if (y < 1900 || y > 2020) {
-					System.out.println("\nPlease enter a value greater than 1900 and less than 2020.\n");
+                
+                try {
+					String year = br.readLine();
+					y = Integer.parseInt(year);
+					if (y < 1900 || y > 2020) {
+						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.\n");
+					}
+					else {
+						break;
+					}
+				} catch (Exception e) {
+					System.out.println("\nInvalid Input. Please enter a number(s)");
 				}
-			} while (y < 1900 || y > 2020);
-
-            String date = m + "/" + d + "/" + y;
+			} while (true);
+			String date = m + "/" + d + "/" + y;
             
             System.out.print("Enter the flight number: ");
             String flightNum = br.readLine();
@@ -446,7 +504,7 @@ public class AirBooking{
                     }
 
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    System.out.println("\nInvalid Input. Please enter a number(s)");
                 }
             } while(true);
 
@@ -519,7 +577,7 @@ public class AirBooking{
 		}
 	}
     
-    // TODO needs to be tested
+    // DONE. Verified with ratings table. 
 	public static void ListHighestRatedRoutes(AirBooking esql){//7
         //List the k highest rated Routes (i.e. Airline Name, flightNum, Avg_Score)
         try {
@@ -528,11 +586,11 @@ public class AirBooking{
             String results = br.readLine();
 
             String query = "SELECT A.name, F.flightNum, F.origin, F.destination, ";
-            query += "F.plane, AVERAGE(R.score) ";
+            query += "F.plane, AVG(R.score) AS \"score\" ";
             query += "FROM Airline A, Flight F, Ratings R ";
             query += "WHERE A.airId = F.airId AND F.flightNum = R.flightNum ";
-            query += "GROUP BY F.destination ";
-            query += "ORDER BY AVERAGE(R.score) DESC ";
+            query += "GROUP BY F.destination, A.name, F.flightNum ";
+            query += "ORDER BY AVG(R.score) DESC ";
             query += "LIMIT " + results + ";";
 
             int rowCount = esql.executeQueryAndPrintResult(query);
@@ -561,6 +619,7 @@ public class AirBooking{
         }
 	}
 	
+	// DONE
 	public static void FindNumberOfAvailableSeatsForFlight(AirBooking esql){//9
 		//
 		try{
@@ -570,50 +629,73 @@ public class AirBooking{
 			
 			int m;
 			do { 
-                System.out.print("Enter a departure month: ");
-				String month = br.readLine();
-				m = Integer.parseInt(month);
-				if (m < 1 || m > 12) {
-					System.out.println("\nPlease enter a value between 1 and 12.\n");
+                System.out.print("Enter the departure month: ");
+                
+                try {
+					String month = br.readLine();
+					m = Integer.parseInt(month);
+					if (m < 1 || m > 12) {
+						System.out.println("\nInvalid Input. " + m + " isn't between 1 and 12");	
+					}
+					else {
+						break;
+					}
+				} catch (Exception e) {
+					System.out.println("\nInvalid Input. Please enter a number(s)");
 				}
-			} while (m < 1 || m > 12);
+			} while (true);
 			
 			int d;
 			do { 
-                System.out.print("Enter a departure day: ");
-				String day = br.readLine();
-				d = Integer.parseInt(day);
-				if (d < 1 || d > 31) {
-					System.out.println("\nPlease enter a value between 1 and 31.\n");	
+                System.out.print("Enter the departure day: ");
+                
+                try {
+					String day = br.readLine();
+					d = Integer.parseInt(day);
+					if (d < 1 || d > 31) {
+						System.out.println("\nInvalid Input. " + d + " isn't between 1 and 31.\n");	
+					}
+					else {
+						break;
+					}
+				} catch (Exception e) {
+					System.out.println("\nInvalid Input. Please enter a number(s)");
 				}
-			} while (d < 1 || d > 31);
+			} while (true);
 	
 			int y;
 			do { 
-                System.out.print("Enter a departure year: ");
-				String year = br.readLine();
-				y = Integer.parseInt(year);
-				if (y < 1900 || y > 2020) {
-					System.out.println("\nPlease enter a value greater than 1900 and less than 2020.\n");	
+                System.out.print("Enter the departure year: ");
+                
+                try {
+					String year = br.readLine();
+					y = Integer.parseInt(year);
+					if (y < 1900 || y > 2020) {
+						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.\n");
+					}
+					else {
+						break;
+					}
+				} catch (Exception e) {
+					System.out.println("\nInvalid Input. Please enter a number(s)");
 				}
-			} while (y < 1900 || y > 2020);
-
+			} while (true);
 			String date = m + "/" + d + "/" + y;
-			System.out.println(date);
 
 			String query = "SELECT DISTINCT F.flightNum, F.origin, F.destination, B.departure, ";
-			query += "F.seats AS \"total seats\" ";
+			query += "F.seats AS \"total seats\", COUNT(F.flightNum) AS \"booked seats\", ";
+			query += "F.seats - COUNT(F.flightNum) as \"available seats\" ";
 			query += "FROM Booking B, Flight F ";
 			query += "WHERE F.flightNum = '" + flightNum + "' AND ";
 			query += "B.flightNum = F.flightNum AND ";
 			query += "B.departure = '" + date + "' ";
-			//query += "GROUP BY B.departure";
+			query += "GROUP BY B.departure, F.flightNum ";
 
 			int rowCount = esql.executeQueryAndPrintResult(query);
 			System.out.println("total row(s): " + rowCount);
-			// if (rowCount == 0) {
-			// 	System.out.println("There are no flights between " + flightNum + " and " + destination + ".");
-			// }
+			if (rowCount == 0) {
+				System.out.println("There is no information for " + flightNum + " on " + date);
+			}
 
 		} catch(Exception e) {
 			System.err.println(e.getMessage());
