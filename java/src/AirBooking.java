@@ -302,6 +302,7 @@ public class AirBooking{
         //Add a new passenger to the database
         try{
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            
             String passport;
             do {
                 System.out.print("Enter your 10-character Passport Number: ");
@@ -385,10 +386,9 @@ public class AirBooking{
             String country = br.readLine();
 
 			// Test Query
-            String query = "SELECT P.pID, P.fullName ";
-            query += "FROM Passenger P ";
-			int rowCount = esql.getCurrSeqVal(query);
-			// int rowCount = esql.executeQueryAndPrintResult(query);
+            String query = "INSERT INTO Passenger (passNum, fullName, bdate, country) ";
+            query += "VALUES ('" +  passport + "', '" + fullName + "', '" + date + "', '" + country + "')";
+			int rowCount = esql.executeQueryAndPrintResult(query);
 			System.out.println("total row(s): " + rowCount);
 			if (rowCount == 0) {
 				System.out.println();
@@ -511,8 +511,8 @@ public class AirBooking{
             System.out.print("Enter a comment: ");
             String comment;
 
-            String query;
-
+            // String query = "SELECT P.pID, P.fullname FROM Passenger P ";
+			// int rowCount = esql.executeQueryAndPrintResult(query);
 
         } catch(Exception e) {
             System.err.println(e.getMessage());
@@ -592,7 +592,7 @@ public class AirBooking{
             query += "GROUP BY F.destination, A.name, F.flightNum ";
             query += "ORDER BY AVG(R.score) DESC ";
             query += "LIMIT " + results + ";";
-
+            
             int rowCount = esql.executeQueryAndPrintResult(query);
             // System.out.println("total row(s): " + rowCount);
         } catch(Exception e) {
@@ -600,6 +600,7 @@ public class AirBooking{
 		}
 	}
 	
+	// DONE
 	public static void ListFlightFromOriginToDestinationInOrderOfDuration(AirBooking esql){//8
         //List flight to destination in order of duration (i.e. Airline name, flightNum, origin, destination, duration, plane)
         try {
@@ -613,7 +614,17 @@ public class AirBooking{
             System.out.print("Please enter the number of results you would like to see: ");
             String results = br.readLine();
 
-
+			String query = "SELECT A.name, F.flightNum, F.origin, F.destination, F.plane, F.duration ";
+            query += "FROM Airline A, Flight F ";
+            query += "WHERE A.airId = F.airID AND ";
+            query += "F.origin = '" + origin + "' AND ";
+            query += "F.destination = '" + destination + "' ";
+            query += "GROUP BY F.flightNum, A.name, A.airID ";
+            query += "ORDER BY F.duration DESC ";
+            query += "LIMIT " + results + "; ";
+            
+			int rowCount = esql.executeQueryAndPrintResult(query);
+			
         } catch(Exception e) {
             System.err.println(e.getMessage());
         }
