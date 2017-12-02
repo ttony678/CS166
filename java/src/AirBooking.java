@@ -297,7 +297,7 @@ public class AirBooking{
     
     /*************************DATABASE FUNCTIONS*******************************/
     
-    // USER INPUT DONE
+    // DONE
 	public static void AddPassenger(AirBooking esql){//1
         //Add a new passenger to the database
         try{
@@ -388,12 +388,12 @@ public class AirBooking{
 			// Test Query
             String query = "INSERT INTO Passenger (passNum, fullName, bdate, country) ";
             query += "VALUES ('" +  passport + "', '" + fullName + "', '" + date + "', '" + country + "')";
-			int rowCount = esql.executeQueryAndPrintResult(query);
+			int rowCount = esql.executeQuery(query);
 			System.out.println("total row(s): " + rowCount);
 			if (rowCount == 0) {
 				System.out.println();
 			}
-
+			
 		} catch(Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -510,9 +510,6 @@ public class AirBooking{
 
             System.out.print("Enter a comment: ");
             String comment;
-
-            // String query = "SELECT P.pID, P.fullname FROM Passenger P ";
-			// int rowCount = esql.executeQueryAndPrintResult(query);
 
         } catch(Exception e) {
             System.err.println(e.getMessage());
