@@ -311,7 +311,14 @@ public class AirBooking{
                     System.out.println("Invalid length, all Passport Numbers must be 10 characters long.");
                 }
                 else {
-                    break;
+                    String q = "SELECT passNum FROM Passenger WHERE passNum = '" + passport + "' ";
+                    int r = executeQuery(q);
+                    if (r == 0) {
+                        break;
+                    }
+                    else {
+                        System.out.println("Error: This passport number already exists in the system.");
+                    }
                 }
             } while (true);
 
@@ -320,7 +327,7 @@ public class AirBooking{
 				System.out.print("Enter your full name: ");
 				fullName = br.readLine();
 				if (fullName.length() == 0) {
-					System.out.println("Name cannot be empty");
+					System.out.println("Name cannot be empty.");
 				}
 				else {
 					break;
@@ -335,13 +342,16 @@ public class AirBooking{
 					String month = br.readLine();
 					m = Integer.parseInt(month);
 					if (m < 1 || m > 12) {
-						System.out.println("\nInvalid Input. " + m + " isn't between 1 and 12");	
-					}
+						System.out.println("\nInvalid Input. " + m + " isn't between 1 and 12.");	
+                    }
+                    else if (month.length() == 0) {
+                        System.out.println("\nInvalid Input. Month cannot be empty.");	
+                    }
 					else {
 						break;
 					}
 				} catch (Exception e) {
-					System.out.println("\nInvalid Input. Please enter a number(s)");
+					System.out.println("\nInvalid Input. Please enter a number(s).");
 				}
 			} while (true);
 			
@@ -353,8 +363,11 @@ public class AirBooking{
 					String day = br.readLine();
 					d = Integer.parseInt(day);
 					if (d < 1 || d > 31) {
-						System.out.println("\nInvalid Input. " + d + " isn't between 1 and 31.\n");	
-					}
+						System.out.println("\nInvalid Input. " + d + " isn't between 1 and 31.");	
+                    }
+                    else if (day.length() == 0) {
+                        System.out.println("\nInvalid Input. Day cannot be empty.");	
+                    }
 					else {
 						break;
 					}
@@ -371,8 +384,11 @@ public class AirBooking{
 					String year = br.readLine();
 					y = Integer.parseInt(year);
 					if (y < 1900 || y > 2020) {
-						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.\n");
-					}
+						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.");
+                    }
+                    else if (year.length() == 0) {
+                        System.out.println("\nInvalid Input. Yeaer cannot be empty.");	
+                    }
 					else {
 						break;
 					}
@@ -382,10 +398,18 @@ public class AirBooking{
 			} while (true);
 			String date = m + "/" + d + "/" + y;
 
-            System.out.print("Enter your country of origin:  ");
-            String country = br.readLine();
+            String country;
+            do {
+                System.out.print("Enter your country of origin:  ");
+                country = br.readLine();
+                if (country.length() != 0) {
+                    break;
+                }
+                else {
+                    System.out.println("Country cannot be empty.")
+                }
+            } while (true);
 
-			// Test Query
             String query = "INSERT INTO Passenger (passNum, fullName, bdate, country) ";
             query += "VALUES ('" +  passport + "', '" + fullName + "', '" + date + "', '" + country + "')";
 			int rowCount = esql.executeQuery(query);
@@ -399,14 +423,26 @@ public class AirBooking{
 		}
 	}
     
-    // USER INPUT DONE. Confused about bookRef
+    // DONE. Needs testing.
 	public static void BookFlight(AirBooking esql){//2
         //Book Flight for an existing customer
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            System.out.print("Enter the booking reference number: ");
-            String bookRef = br.readLine();
+            
+            // Generate random string for bookRef variable. This loop first checks the booking
+            // table to guarantee its uniqueness of bookRef before insertion.
+            String bookRef;
+            do {
+                bookRef = getSaltString();
 
+                String q = "SELECT bookRef FROM Booking WHERE bookRef = '" + bookRef + "' ";
+                int r = executeQuery(q);
+                if (r == 0) {
+                    break;
+                }
+            } while (true);
+
+            // Getting the month from the user
             int m;
 			do { 
                 System.out.print("Enter the departure month: ");
@@ -416,7 +452,10 @@ public class AirBooking{
 					m = Integer.parseInt(month);
 					if (m < 1 || m > 12) {
 						System.out.println("\nInvalid Input. " + m + " isn't between 1 and 12");	
-					}
+                    }
+                    else if (month.length() == 0) {
+                        System.out.println("\nInvalid Input. Month cannot be empty.");	
+                    }
 					else {
 						break;
 					}
@@ -424,7 +463,8 @@ public class AirBooking{
 					System.out.println("\nInvalid Input. Please enter a number(s)");
 				}
 			} while (true);
-			
+            
+            // Getting the day from the user
 			int d;
 			do { 
                 System.out.print("Enter the departure day: ");
@@ -434,15 +474,19 @@ public class AirBooking{
 					d = Integer.parseInt(day);
 					if (d < 1 || d > 31) {
 						System.out.println("\nInvalid Input. " + d + " isn't between 1 and 31.\n");	
-					}
+                    }
+                    else if (day.length() == 0) {
+                        System.out.println("\nInvalid Input. Day cannot be empty.");	
+                    }
 					else {
 						break;
 					}
 				} catch (Exception e) {
-					System.out.println("\nInvalid Input. Please enter a number(s)");
+					System.out.println("\nInvalid Input. Please enter a number(s).");
 				}
 			} while (true);
-	
+    
+            // Getting the year from the user
 			int y;
 			do { 
                 System.out.print("Enter the departure year: ");
@@ -452,42 +496,84 @@ public class AirBooking{
 					y = Integer.parseInt(year);
 					if (y < 1900 || y > 2020) {
 						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.\n");
-					}
+                    }
+                    else if (year.length() == 0) {
+                        System.out.println("\nInvalid Input. Yeaer cannot be empty.");	
+                    }
 					else {
 						break;
 					}
 				} catch (Exception e) {
-					System.out.println("\nInvalid Input. Please enter a number(s)");
+					System.out.println("\nInvalid Input. Please enter a number(s).");
 				}
 			} while (true);
 			String date = m + "/" + d + "/" + y;
             
-            System.out.print("Enter the flight number: ");
-            String flightNum = br.readLine();
+            String flightNum
+            do {
+                System.out.print("Enter the flight number: ");
+                flightNum = br.readLine();
+                if (flightNum.length() != 0) {
+                    break;
+                }
+            } while (true);
 
-            System.out.print("Enter the passenger ID: ");
-            String pID = br.readLine();
+            String pID;
+            do {
+                System.out.print("Enter the passenger ID: ");
+                pID = br.readLine();
+                if (pID.length() != 0) {
+                    break;
+                }
+            } while (true;)
 
-
+            // Test Query
+            String query = "INSERT INTO Booking (bookRef, departure, flightNum, pID) ";
+            query += "VALUES ('" +  bookRef + "', '" + date + "', '" + flightNum + "', '" + pID + "')";
+            int rowCount = esql.executeQuery(query);
+            
         } catch(Exception e) {
             System.err.println(e.getMessage());
         }
 	}
     
-    // USER INPUT DONE. Confused about rID
+    // DONE. Needs testing.
 	public static void TakeCustomerReview(AirBooking esql){//3
         //Insert customer review into the ratings table
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-            System.out.print("Enter the rating ID: ");
-            String rID = br.readLine();
+            String pID;
+            do {
+                System.out.print("Enter the passenger ID: ");
+                pID = br.readLine();
+                if (pID.length() != 0) {
+                    break;
+                }
+                else {
+                    System.out.println("Cannot have empty input.");
+                }
+            } while (true);
 
-            System.out.print("Enter the passenger ID: ");
-            String pID = br.readLine();
-
-            System.out.print("Enter the flight number: ");
-            String flightNum = br.readLine();
+            String flightNum;
+            do {
+                System.out.print("Enter the flight number: ");
+                flightNum = br.readLine();
+                if (flightNum.length() != 0) {
+                    break;
+                }
+                else {
+                    System.out.println("Cannot have empty input.");
+                }
+            } while (true);
+            
+            String q = "SELECT pID, flightNum FROM Booking WHERE piD = '" + piD + "' AND flightNum = '" + flightNum + "' ";
+            int r = executeQuery(q);
+            if (r == 0) {
+                System.out.println("Error. No booking record found for this passenger and flight.");
+                System.out.println("Passenger cannot rate a flight they did not fly on.");
+                return;
+            }            
 
             String score;
             do {
@@ -495,8 +581,8 @@ public class AirBooking{
                 try {
                     score = br.readLine();
                     int s = Integer.parseInt(score);
-                    if (s < 0 || s > 5) {
-                        System.out.print("Invalid input\n");
+                    if (s < 0 || s > 5 || score.length() == 0) {
+                        System.out.println("Invalid input.");
                         continue;
                     }
                     else {
@@ -511,6 +597,11 @@ public class AirBooking{
             System.out.print("Enter a comment: ");
             String comment;
 
+            String query = "INSERT INTO Ratings (pID, flightNum, score, comment) ";
+            query += "VALUES ('" +  pID + "', '" + flightNum + "', '" + score + "', '" + comment + "')";
+			int rowCount = esql.executeQuery(query);
+			System.out.println("total row(s): " + rowCount);
+
         } catch(Exception e) {
             System.err.println(e.getMessage());
         }
@@ -520,6 +611,9 @@ public class AirBooking{
 	public static void InsertOrUpdateRouteForAirline(AirBooking esql){//4
         //Insert a new route for the airline
         try {
+
+            // Make sure airId is valid
+            // Use java to verify seats
             
         } catch(Exception e) {
             System.err.println(e.getMessage());
@@ -530,12 +624,32 @@ public class AirBooking{
 	public static void ListAvailableFlightsBetweenOriginAndDestination(AirBooking esql) throws Exception{//5
 		//List all flights between origin and distination (i.e. flightNum,origin,destination,plane,duration) 
 		try{
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			System.out.print("Enter an origin: ");
-			String origin = br.readLine();
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String origin;
+            do {
+                System.out.print("Enter an origin: ");
+                origin = br.readLine();
+                if (origin.length() != ) {
+                    break;
+                }
+                else {
+                    System.out.println("Origin cannot be empty.");
+                }
+            } while (true);
+            origin = castString(origin);
 
-			System.out.print("Enter a destination: ");
-			String destination = br.readLine();
+            String destination;
+            do {
+                System.out.print("Enter a destination: ");
+                destination = br.readLine();
+                if (destination.length() != 0) {
+                    break;
+                }
+                else {
+                    System.out.println("Destination cannot be empty");
+                }
+            }
+            destination = castString(destination);
 
 			String query = "SELECT F.flightNum, F.origin, F.destination, F.plane, F.duration ";
 			query += "FROM Flight F ";
@@ -557,9 +671,19 @@ public class AirBooking{
 	public static void ListMostPopularDestinations(AirBooking esql){//6
 		//Print the k most popular destinations based on the number of flights offered to them (i.e. destination, choices)
 		try{
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			System.out.print("Please enter the number of results you would like to see: ");
-			String results = br.readLine();
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            
+            String results;
+            do {
+                System.out.print("Please enter the number of results you would like to see: ");
+                results = br.readLine();
+                if (result.length() != 0) {
+                    break;
+                }
+                else {
+                    System.out.println();
+                }
+            } while (true);
 
 			String query = "SELECT COUNT(F.destination), F.destination ";
 			query += "FROM Flight F ";
@@ -568,7 +692,6 @@ public class AirBooking{
 			query += "LIMIT " + results + ";";
 
 			int rowCount = esql.executeQueryAndPrintResult(query);
-			// System.out.println("total row(s): " + rowCount);
 		} catch(Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -579,8 +702,17 @@ public class AirBooking{
         //List the k highest rated Routes (i.e. Airline Name, flightNum, Avg_Score)
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            System.out.print("Please enter the number of results you would like to see: ");
-            String results = br.readLine();
+            String results;
+            do {
+                System.out.print("Please enter the number of results you would like to see: ");
+                results = br.readLine();
+                if (result.length() != 0) {
+                    break;
+                }
+                else {
+                    System.out.println("Results cannot be empty.");
+                }
+            } while (true);
 
             String query = "SELECT A.name, F.flightNum, F.origin, F.destination, ";
             query += "F.plane, AVG(R.score) AS \"score\" ";
@@ -602,14 +734,43 @@ public class AirBooking{
         //List flight to destination in order of duration (i.e. Airline name, flightNum, origin, destination, duration, plane)
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			System.out.print("Enter an origin: ");
-			String origin = br.readLine();
+			String origin;
+            do {
+                System.out.print("Enter an origin: ");
+                origin = br.readLine();
+                if (origin.length() != ) {
+                    break;
+                }
+                else {
+                    System.out.println("Origin cannot be empty.");
+                }
+            } while (true);
+            origin = castString(origin);
 
-			System.out.print("Enter a destination: ");
-            String destination = br.readLine();
+			String destination;
+            do {
+                System.out.print("Enter a destination: ");
+                destination = br.readLine();
+                if (destination.length() != 0) {
+                    break;
+                }
+                else {
+                    System.out.println("Destination cannot be empty");
+                }
+            }
+            destination = castString(destination);
             
-            System.out.print("Please enter the number of results you would like to see: ");
-            String results = br.readLine();
+            String results;
+            do {
+                System.out.print("Please enter the number of results you would like to see: ");
+                results = br.readLine();
+                if (result.length() != 0) {
+                    break;
+                }
+                else {
+                    System.out.println("Results cannot be empty.");
+                }
+            } while (true);
 
 			String query = "SELECT A.name, F.flightNum, F.origin, F.destination, F.plane, F.duration ";
             query += "FROM Airline A, Flight F ";
@@ -632,8 +793,15 @@ public class AirBooking{
 		//
 		try{
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			System.out.print("Enter a flight number: ");
-			String flightNum = br.readLine();
+            
+            String flightNum
+            do {
+                System.out.print("Enter the flight number: ");
+                flightNum = br.readLine();
+                if (flightNum.length() != 0) {
+                    break;
+                }
+            } while (true);
 			
 			int m;
 			do { 
@@ -644,7 +812,10 @@ public class AirBooking{
 					m = Integer.parseInt(month);
 					if (m < 1 || m > 12) {
 						System.out.println("\nInvalid Input. " + m + " isn't between 1 and 12");	
-					}
+                    }
+                    else if (month.length() == 0) {
+                        System.out.println("Month cannot be empty.");
+                    }
 					else {
 						break;
 					}
@@ -662,7 +833,10 @@ public class AirBooking{
 					d = Integer.parseInt(day);
 					if (d < 1 || d > 31) {
 						System.out.println("\nInvalid Input. " + d + " isn't between 1 and 31.\n");	
-					}
+                    }
+                    else if (day.length() == 0) {
+                        System.out.println("Day cannot be empty");
+                    }
 					else {
 						break;
 					}
@@ -680,7 +854,10 @@ public class AirBooking{
 					y = Integer.parseInt(year);
 					if (y < 1900 || y > 2020) {
 						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.\n");
-					}
+                    }
+                    else if (year.length() == 0) {
+                        System.out.println("Year cannot be empty");
+                    }
 					else {
 						break;
 					}
@@ -709,5 +886,23 @@ public class AirBooking{
 			System.err.println(e.getMessage());
 		}
 		
-	}
+    }
+    
+    protected String getSaltString() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 10) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+    }
+
+    public String castString(String str) {
+        String name  = str; 
+        name = name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
+        return name;
+    }
 }
