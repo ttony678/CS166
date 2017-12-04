@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * This class defines a simple embedded SQL utility class that is designed to
@@ -240,7 +241,7 @@ public class AirBooking{
 			
 			boolean keepon = true;
 			while(keepon){
-				System.out.println("MAIN MENU");
+				System.out.println("\nMAIN MENU");
 				System.out.println("---------");
 				System.out.println("1. Add Passenger");
 				System.out.println("2. Book Flight");
@@ -308,16 +309,16 @@ public class AirBooking{
                 System.out.print("Enter your 10-character Passport Number: ");
                 passport = br.readLine();
                 if (passport.length() != 10) {
-                    System.out.println("Invalid length, all Passport Numbers must be 10 characters long.");
+                    System.out.println("\nInvalid length, all Passport Numbers must be 10 characters long.");
                 }
                 else {
                     String q = "SELECT passNum FROM Passenger WHERE passNum = '" + passport + "' ";
-                    int r = executeQuery(q);
+                    int r = esql.executeQuery(q);
                     if (r == 0) {
                         break;
                     }
                     else {
-                        System.out.println("Error: This passport number already exists in the system.");
+                        System.out.println("\nError: This passport number already exists in the system.");
                     }
                 }
             } while (true);
@@ -327,7 +328,7 @@ public class AirBooking{
 				System.out.print("Enter your full name: ");
 				fullName = br.readLine();
 				if (fullName.length() == 0) {
-					System.out.println("Name cannot be empty.");
+					System.out.println("\nName cannot be empty.");
 				}
 				else {
 					break;
@@ -387,7 +388,7 @@ public class AirBooking{
 						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.");
                     }
                     else if (year.length() == 0) {
-                        System.out.println("\nInvalid Input. Yeaer cannot be empty.");	
+                        System.out.println("\nInvalid Input. Year cannot be empty.");	
                     }
 					else {
 						break;
@@ -406,9 +407,10 @@ public class AirBooking{
                     break;
                 }
                 else {
-                    System.out.println("Country cannot be empty.")
+                    System.out.println("\nCountry cannot be empty.");
                 }
             } while (true);
+            country = castString(country);
 
             String query = "INSERT INTO Passenger (passNum, fullName, bdate, country) ";
             query += "VALUES ('" +  passport + "', '" + fullName + "', '" + date + "', '" + country + "')";
@@ -436,7 +438,7 @@ public class AirBooking{
                 bookRef = getSaltString();
 
                 String q = "SELECT bookRef FROM Booking WHERE bookRef = '" + bookRef + "' ";
-                int r = executeQuery(q);
+                int r = esql.executeQuery(q);
                 if (r == 0) {
                     break;
                 }
@@ -509,7 +511,7 @@ public class AirBooking{
 			} while (true);
 			String date = m + "/" + d + "/" + y;
             
-            String flightNum
+            String flightNum;
             do {
                 System.out.print("Enter the flight number: ");
                 flightNum = br.readLine();
@@ -525,9 +527,8 @@ public class AirBooking{
                 if (pID.length() != 0) {
                     break;
                 }
-            } while (true;)
+            } while (true);
 
-            // Test Query
             String query = "INSERT INTO Booking (bookRef, departure, flightNum, pID) ";
             query += "VALUES ('" +  bookRef + "', '" + date + "', '" + flightNum + "', '" + pID + "')";
             int rowCount = esql.executeQuery(query);
@@ -551,7 +552,7 @@ public class AirBooking{
                     break;
                 }
                 else {
-                    System.out.println("Cannot have empty input.");
+                    System.out.println("\nCannot have empty input.");
                 }
             } while (true);
 
@@ -563,17 +564,21 @@ public class AirBooking{
                     break;
                 }
                 else {
-                    System.out.println("Cannot have empty input.");
+                    System.out.println("\nCannot have empty input.");
                 }
             } while (true);
             
-            String q = "SELECT pID, flightNum FROM Booking WHERE piD = '" + piD + "' AND flightNum = '" + flightNum + "' ";
-            int r = executeQuery(q);
+            String q = "SELECT pID, flightNum FROM Booking WHERE piD = '" + pID + "' AND flightNum = '" + flightNum + "' ";
+            int r = esql.executeQuery(q);
             if (r == 0) {
-                System.out.println("Error. No booking record found for this passenger and flight.");
-                System.out.println("Passenger cannot rate a flight they did not fly on.");
+                System.out.println("\nError. No booking record found for this passenger and flight.");
+                System.out.println("\tPassenger cannot rate a flight they did not fly on.");
                 return;
-            }            
+            }        
+            else if (r == 1) {
+				System.out.println("\nError. Cannot rate the same flight twice.");
+                return;  
+			}
 
             String score;
             do {
@@ -582,7 +587,7 @@ public class AirBooking{
                     score = br.readLine();
                     int s = Integer.parseInt(score);
                     if (s < 0 || s > 5 || score.length() == 0) {
-                        System.out.println("Invalid input.");
+                        System.out.println("\nInvalid input.");
                         continue;
                     }
                     else {
@@ -596,6 +601,7 @@ public class AirBooking{
 
             System.out.print("Enter a comment: ");
             String comment;
+            comment = br.readLine();
 
             String query = "INSERT INTO Ratings (pID, flightNum, score, comment) ";
             query += "VALUES ('" +  pID + "', '" + flightNum + "', '" + score + "', '" + comment + "')";
@@ -629,7 +635,7 @@ public class AirBooking{
             do {
                 System.out.print("Enter an origin: ");
                 origin = br.readLine();
-                if (origin.length() != ) {
+                if (origin.length() != 0) {
                     break;
                 }
                 else {
@@ -648,7 +654,7 @@ public class AirBooking{
                 else {
                     System.out.println("Destination cannot be empty");
                 }
-            }
+            } while (true);
             destination = castString(destination);
 
 			String query = "SELECT F.flightNum, F.origin, F.destination, F.plane, F.duration ";
@@ -659,7 +665,7 @@ public class AirBooking{
 			int rowCount = esql.executeQueryAndPrintResult(query);
 			// System.out.println("total row(s): " + rowCount);
 			if (rowCount == 0) {
-				System.out.println("There are no flights between " + origin + " and " + destination + ".");
+				System.out.println("\nThere are no flights between " + origin + " and " + destination + ".");
 			}
 
 		} catch(Exception e) {
@@ -677,7 +683,7 @@ public class AirBooking{
             do {
                 System.out.print("Please enter the number of results you would like to see: ");
                 results = br.readLine();
-                if (result.length() != 0) {
+                if (results.length() != 0) {
                     break;
                 }
                 else {
@@ -685,7 +691,7 @@ public class AirBooking{
                 }
             } while (true);
 
-			String query = "SELECT COUNT(F.destination), F.destination ";
+			String query = "SELECT COUNT(F.destination), F.destination, F.flightNum ";
 			query += "FROM Flight F ";
 			query += "GROUP BY F.destination ";
 			query += "ORDER BY COUNT(F.destination) DESC ";
@@ -706,11 +712,11 @@ public class AirBooking{
             do {
                 System.out.print("Please enter the number of results you would like to see: ");
                 results = br.readLine();
-                if (result.length() != 0) {
+                if (results.length() != 0) {
                     break;
                 }
                 else {
-                    System.out.println("Results cannot be empty.");
+                    System.out.println("\nResults cannot be empty.");
                 }
             } while (true);
 
@@ -738,11 +744,11 @@ public class AirBooking{
             do {
                 System.out.print("Enter an origin: ");
                 origin = br.readLine();
-                if (origin.length() != ) {
+                if (origin.length() != 0) {
                     break;
                 }
                 else {
-                    System.out.println("Origin cannot be empty.");
+                    System.out.println("\nOrigin cannot be empty.");
                 }
             } while (true);
             origin = castString(origin);
@@ -755,20 +761,20 @@ public class AirBooking{
                     break;
                 }
                 else {
-                    System.out.println("Destination cannot be empty");
+                    System.out.println("\nDestination cannot be empty");
                 }
-            }
+            } while (true);
             destination = castString(destination);
             
             String results;
             do {
                 System.out.print("Please enter the number of results you would like to see: ");
                 results = br.readLine();
-                if (result.length() != 0) {
+                if (results.length() != 0) {
                     break;
                 }
                 else {
-                    System.out.println("Results cannot be empty.");
+                    System.out.println("\nResults cannot be empty.");
                 }
             } while (true);
 
@@ -794,7 +800,7 @@ public class AirBooking{
 		try{
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             
-            String flightNum
+            String flightNum;
             do {
                 System.out.print("Enter the flight number: ");
                 flightNum = br.readLine();
@@ -814,7 +820,7 @@ public class AirBooking{
 						System.out.println("\nInvalid Input. " + m + " isn't between 1 and 12");	
                     }
                     else if (month.length() == 0) {
-                        System.out.println("Month cannot be empty.");
+                        System.out.println("\nMonth cannot be empty.");
                     }
 					else {
 						break;
@@ -835,7 +841,7 @@ public class AirBooking{
 						System.out.println("\nInvalid Input. " + d + " isn't between 1 and 31.\n");	
                     }
                     else if (day.length() == 0) {
-                        System.out.println("Day cannot be empty");
+                        System.out.println("\nDay cannot be empty");
                     }
 					else {
 						break;
@@ -856,7 +862,7 @@ public class AirBooking{
 						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.\n");
                     }
                     else if (year.length() == 0) {
-                        System.out.println("Year cannot be empty");
+                        System.out.println("\nYear cannot be empty");
                     }
 					else {
 						break;
@@ -879,7 +885,7 @@ public class AirBooking{
 			int rowCount = esql.executeQueryAndPrintResult(query);
 			System.out.println("total row(s): " + rowCount);
 			if (rowCount == 0) {
-				System.out.println("There is no information for " + flightNum + " on " + date);
+				System.out.println("\nThere is no information for " + flightNum + " on " + date);
 			}
 
 		} catch(Exception e) {
@@ -888,7 +894,7 @@ public class AirBooking{
 		
     }
     
-    protected String getSaltString() {
+    protected static String getSaltString() {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
@@ -900,9 +906,22 @@ public class AirBooking{
         return saltStr;
     }
 
-    public String castString(String str) {
-        String name  = str; 
-        name = name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
-        return name;
+    public static String castString(String givenString) {
+        //String name  = str; 
+        //name = name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
+        //return name;
+        String source = givenString;
+		StringBuffer res = new StringBuffer();
+
+		String[] strArr = source.split(" ");
+		for (String str : strArr) {
+			char[] stringArray = str.trim().toCharArray();
+			stringArray[0] = Character.toUpperCase(stringArray[0]);
+			str = new String(stringArray);
+
+			res.append(str).append(" ");
+		}
+
+		return res.toString().trim();
     }
 }
