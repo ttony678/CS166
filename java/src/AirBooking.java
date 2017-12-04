@@ -333,7 +333,8 @@ public class AirBooking{
 				else {
 					break;
 				}
-			} while (true);
+            } while (true);
+            fullname = castString(fullName);
 
             int m;
 			do { 
@@ -425,7 +426,7 @@ public class AirBooking{
 		}
 	}
     
-    // DONE. Needs testing.
+    // DONE.
 	public static void BookFlight(AirBooking esql){//2
         //Book Flight for an existing customer
         try {
@@ -538,7 +539,7 @@ public class AirBooking{
         }
 	}
     
-    // DONE. Needs testing.
+    // DONE.
 	public static void TakeCustomerReview(AirBooking esql){//3
         //Insert customer review into the ratings table
         try {
@@ -894,6 +895,9 @@ public class AirBooking{
 		
     }
     
+    // This method generates our bookRef variable. 
+    // taken from online:
+    // https://stackoverflow.com/questions/5392693/java-random-number-with-given-length
     protected static String getSaltString() {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
@@ -906,10 +910,10 @@ public class AirBooking{
         return saltStr;
     }
 
+    // This method capitalizes the first letter of each word.
+    // Taken from online:
+    // https://stackoverflow.com/questions/1149855/how-to-upper-case-every-first-letter-of-word-in-a-string
     public static String castString(String givenString) {
-        //String name  = str; 
-        //name = name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
-        //return name;
         String source = givenString;
 		StringBuffer res = new StringBuffer();
 
