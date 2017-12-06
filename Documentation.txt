@@ -1,0 +1,3 @@
+Cannot add 2 passengers with same passport number.
+Passenger cannot review same flight twice.
+Creation of table on FindNumberOfAvailableSeatsForFlight even when no information presented that has 0 as booked seats.

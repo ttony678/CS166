@@ -415,11 +415,26 @@ public class AirBooking{
 
             String query = "INSERT INTO Passenger (passNum, fullName, bdate, country) ";
             query += "VALUES ('" +  passport + "', '" + fullName + "', '" + date + "', '" + country + "')";
-			int rowCount = esql.executeQuery(query);
-			System.out.println("total row(s): " + rowCount);
-			if (rowCount == 0) {
-				System.out.println();
-			}
+			esql.executeUpdate(query);
+			System.out.println("\nSuccessfully entered into database.");
+			
+			// Getting the current user just entered into database.
+			query = "SELECT * FROM Passenger WHERE passNum = '" + passport + "' ";
+			List<List<String>> r = esql.executeQueryAndReturnResult(query);
+			
+			// Formatting output
+			System.out.print("pid passnum    fullname                 birthday country\n");
+				for (int i = 0; i < r.size(); i++) {
+					for (int j = 0; j < r.get(i).size(); j++) {
+						if (j != 3) {
+							System.out.print(r.get(i).get(j) + " ");
+						}
+						else {
+							System.out.print(date + " ");
+						}
+					}
+					System.out.println();
+				}
 			
 		} catch(Exception e) {
 			System.err.println(e.getMessage());
@@ -501,7 +516,7 @@ public class AirBooking{
 						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.\n");
                     }
                     else if (year.length() == 0) {
-                        System.out.println("\nInvalid Input. Yeaer cannot be empty.");	
+                        System.out.println("\nInvalid Input. Year cannot be empty.");	
                     }
 					else {
 						break;
@@ -548,7 +563,8 @@ public class AirBooking{
 
             String query = "INSERT INTO Booking (bookRef, departure, flightNum, pID) ";
             query += "VALUES ('" +  bookRef + "', '" + date + "', '" + flightNum + "', '" + pID + "')";
-            int rowCount = esql.executeQuery(query);
+            esql.executeUpdate(query);
+            System.out.println("\nSuccessfully entered into database.");
             
         } catch(Exception e) {
             System.err.println(e.getMessage());
@@ -601,17 +617,23 @@ public class AirBooking{
                 }
             } while (true);
             
+            // Guaranteeing that a passenger has booked a specific flight.
+            // Passengers can only rate flights they've ridden on.
             String q = "SELECT pID, flightNum FROM Booking WHERE piD = '" + pID + "' AND flightNum = '" + flightNum + "' ";
             int r = esql.executeQuery(q);
             if (r == 0) {
                 System.out.println("\nError: No booking record found for this passenger and flight.");
-                System.out.println("\tPassenger cannot rate a flight they did not fly on.");
+                System.out.println("       Passenger cannot rate a flight they did not fly on.");
                 return;
-            }        
-            else if (r == 1) {
-				System.out.println("\nError: Cannot rate the same flight twice.");
-                return;  
-			}
+            }  
+            
+            // Checking if passenger has already rated this flight.
+            q = "SELECT pID, flightNum FROM Ratings WHERE pID = '" + pID + "' AND flightNUM = '" + flightNum + "' ";
+			r = esql.executeQuery(q);
+            if (r == 1) {
+                System.out.println("\nError: Cannot rate some flight twice.");
+                return;
+            } 
 
             String score;
             do {
@@ -638,8 +660,8 @@ public class AirBooking{
 
             String query = "INSERT INTO Ratings (pID, flightNum, score, comment) ";
             query += "VALUES ('" +  pID + "', '" + flightNum + "', '" + score + "', '" + comment + "')";
-			int rowCount = esql.executeQuery(query);
-			System.out.println("total row(s): " + rowCount);
+			esql.executeUpdate(query);
+			System.out.println("\nSuccessfully entered into database.");
 
         } catch(Exception e) {
             System.err.println(e.getMessage());
@@ -696,7 +718,6 @@ public class AirBooking{
 			query += "AND F.destination = '" + destination + "';";
 
 			int rowCount = esql.executeQueryAndPrintResult(query);
-			// System.out.println("total row(s): " + rowCount);
 			if (rowCount == 0) {
 				System.out.println("\nThere are no flights between " + origin + " and " + destination + ".");
 			}
