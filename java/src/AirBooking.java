@@ -334,7 +334,7 @@ public class AirBooking{
 					break;
 				}
             } while (true);
-            fullname = castString(fullName);
+            fullName = castString(fullName);
 
             int m;
 			do { 
@@ -517,7 +517,15 @@ public class AirBooking{
                 System.out.print("Enter the flight number: ");
                 flightNum = br.readLine();
                 if (flightNum.length() != 0) {
-                    break;
+                    String q = "SELECT flightNum FROM Flight WHERE Flight.flightNum = '" + flightNum + "' ";
+					int r = esql.executeQuery(q);
+					if (r == 0) {
+						System.out.println("\nError: This flightNum doesn't exist in database.");
+						return;
+					}
+					else {
+						break;
+					}
                 }
             } while (true);
 
@@ -526,7 +534,15 @@ public class AirBooking{
                 System.out.print("Enter the passenger ID: ");
                 pID = br.readLine();
                 if (pID.length() != 0) {
-                    break;
+                    String q = "SELECT pID FROM Passenger WHERE Passenger.pID = '" + pID + "' ";
+					int r = esql.executeQuery(q);
+					if (r == 0) {
+						System.out.println("\nError: This pID doesn't exist in database.");
+						return;
+					}
+					else {
+						break;
+					}
                 }
             } while (true);
 
@@ -550,7 +566,15 @@ public class AirBooking{
                 System.out.print("Enter the passenger ID: ");
                 pID = br.readLine();
                 if (pID.length() != 0) {
-                    break;
+                    String q = "SELECT pID FROM Passenger WHERE Passenger.pID = '" + pID + "' ";
+					int r = esql.executeQuery(q);
+					if (r == 0) {
+						System.out.println("\nError: This pID doesn't exist in database.");
+						return;
+					}
+					else {
+						break;
+					}
                 }
                 else {
                     System.out.println("\nCannot have empty input.");
@@ -562,7 +586,15 @@ public class AirBooking{
                 System.out.print("Enter the flight number: ");
                 flightNum = br.readLine();
                 if (flightNum.length() != 0) {
-                    break;
+                    String q = "SELECT flightNum FROM Flight WHERE Flight.flightNum = '" + flightNum + "' ";
+					int r = esql.executeQuery(q);
+					if (r == 0) {
+						System.out.println("\nError: This flightNum doesn't exist in database.");
+						return;
+					}
+					else {
+						break;
+					}
                 }
                 else {
                     System.out.println("\nCannot have empty input.");
@@ -572,12 +604,12 @@ public class AirBooking{
             String q = "SELECT pID, flightNum FROM Booking WHERE piD = '" + pID + "' AND flightNum = '" + flightNum + "' ";
             int r = esql.executeQuery(q);
             if (r == 0) {
-                System.out.println("\nError. No booking record found for this passenger and flight.");
+                System.out.println("\nError: No booking record found for this passenger and flight.");
                 System.out.println("\tPassenger cannot rate a flight they did not fly on.");
                 return;
             }        
             else if (r == 1) {
-				System.out.println("\nError. Cannot rate the same flight twice.");
+				System.out.println("\nError: Cannot rate the same flight twice.");
                 return;  
 			}
 
@@ -730,7 +762,6 @@ public class AirBooking{
             query += "LIMIT " + results + ";";
             
             int rowCount = esql.executeQueryAndPrintResult(query);
-            // System.out.println("total row(s): " + rowCount);
         } catch(Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -806,7 +837,15 @@ public class AirBooking{
                 System.out.print("Enter the flight number: ");
                 flightNum = br.readLine();
                 if (flightNum.length() != 0) {
-                    break;
+					String q = "SELECT flightNum FROM Flight WHERE Flight.flightNum = '" + flightNum + "' ";
+					int r = esql.executeQuery(q);
+					if (r == 0) {
+						System.out.println("\nError: This flightNum doesn't exist in database.");
+						return;
+					}
+					else {
+						break;
+					}
                 }
             } while (true);
 			
@@ -884,9 +923,31 @@ public class AirBooking{
 			query += "GROUP BY B.departure, F.flightNum ";
 
 			int rowCount = esql.executeQueryAndPrintResult(query);
-			System.out.println("total row(s): " + rowCount);
 			if (rowCount == 0) {
-				System.out.println("\nThere is no information for " + flightNum + " on " + date);
+				// If unbooked flight make sure we tell there are 0 booked flights so far. 
+				query = "SELECT Flight.flightNum, Flight.origin, Flight.destination, ";
+				query += "Booking.departure, Flight.seats AS \"total seats\", ";
+				query += "COUNT(Flight.flightNum) - 1 AS \"booked seats\", ";
+				query += "Flight.seats AS \"available seats\" ";
+				query += "FROM Flight ";
+				query += "LEFT JOIN Booking on Booking.flightNum = Flight.flightNum ";
+				query += "WHERE Flight.flightNum = '" + flightNum + "' ";
+				query += "GROUP BY Booking.departure, Flight.flightNum ";
+				List<List<String> > r = esql.executeQueryAndReturnResult(query);
+				
+				System.out.print("flightnum       origin                  destination             ");
+				System.out.print("departure seats     booked   available\n");
+				for (int i = 0; i < r.size(); i++) {
+					for (int j = 0; j < r.get(i).size(); j++) {
+						if (j != 3) {
+							System.out.print(r.get(i).get(j) + "        ");
+						}
+						else {
+							System.out.print(date + " ");
+						}
+					}
+					System.out.println();
+				}
 			}
 
 		} catch(Exception e) {
