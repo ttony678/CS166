@@ -424,17 +424,17 @@ public class AirBooking{
 			
 			// Formatting output
 			System.out.print("pid passnum    fullname                 birthday country\n");
-				for (int i = 0; i < r.size(); i++) {
-					for (int j = 0; j < r.get(i).size(); j++) {
-						if (j != 3) {
-							System.out.print(r.get(i).get(j) + " ");
-						}
-						else {
-							System.out.print(date + " ");
-						}
+			for (int i = 0; i < r.size(); i++) {
+				for (int j = 0; j < r.get(i).size(); j++) {
+					if (j != 3) {
+						System.out.print(r.get(i).get(j) + " ");
 					}
-					System.out.println();
+					else {
+						System.out.print(date + " ");
+					}
 				}
+				System.out.println();
+			}
 			
 		} catch(Exception e) {
 			System.err.println(e.getMessage());
@@ -565,6 +565,24 @@ public class AirBooking{
             query += "VALUES ('" +  bookRef + "', '" + date + "', '" + flightNum + "', '" + pID + "')";
             esql.executeUpdate(query);
             System.out.println("\nSuccessfully entered into database.");
+            
+            // Getting the current user just entered into database.
+			query = "SELECT * FROM Booking WHERE bookRef = '" + bookRef + "' ";
+			List<List<String>> r = esql.executeQueryAndReturnResult(query);
+			
+			// Formatting output
+			System.out.print("bookRef       departure flightNum   pid\n");
+			for (int i = 0; i < r.size(); i++) {
+				for (int j = 0; j < r.get(i).size(); j++) {
+					if (j != 1) {
+						System.out.print(r.get(i).get(j) + "    ");
+					}
+					else {
+						System.out.print(date + "  ");
+					}
+				}
+				System.out.println();
+			}
             
         } catch(Exception e) {
             System.err.println(e.getMessage());
