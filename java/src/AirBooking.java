@@ -663,6 +663,23 @@ public class AirBooking{
 			esql.executeUpdate(query);
 			System.out.println("\nSuccessfully entered into database.");
 
+
+		//NEW STUFF  
+			// Getting the current user just entered into database.
+			query = "SELECT * FROM Ratings WHERE pID = '" + pID + "' AND flightNum = '" + flightNum + "' ";
+			List<List<String>> s = esql.executeQueryAndReturnResult(query);
+			
+			// Formatting output
+			System.out.print("rID        pID      flightNum       Score    Comment\n");
+			for (int i = 0; i < s.size(); i++) {
+				for (int j = 0; j < s.get(i).size(); j++) {
+						System.out.print(s.get(i).get(j) + "        ");
+				}
+				System.out.println();
+			}
+		// END NEW STUFF
+        
+        
         } catch(Exception e) {
             System.err.println(e.getMessage());
         }
@@ -891,7 +908,23 @@ public class AirBooking{
             query += "ORDER BY F.duration DESC ";
             query += "LIMIT " + results + "; ";
             
-			int rowCount = esql.executeQueryAndPrintResult(query);
+			int rowCount = esql.executeQuery(query);
+			
+			//NEW STUFF: Formatting result output
+			List<List<String>> r = esql.executeQueryAndReturnResult(query);
+			
+			// Formatting output
+			if (rowCount != 0)
+			{
+				System.out.print("Airline Name                   flightNum      Origin                 Destination            Plane                  Duration\n");
+					for (int i = 0; i < r.size(); i++) {
+						for (int j = 0; j < r.get(i).size(); j++) {
+								System.out.print(r.get(i).get(j) + "       ");
+						}
+						System.out.println();
+					}
+				// END NEW STUFF
+			}
 			
         } catch(Exception e) {
             System.err.println(e.getMessage());
@@ -1007,8 +1040,8 @@ public class AirBooking{
 				query += "GROUP BY Booking.departure, Flight.flightNum ";
 				List<List<String> > r = esql.executeQueryAndReturnResult(query);
 				
-				System.out.print("flightnum       origin                  destination             ");
-				System.out.print("departure seats     booked   available\n");
+				System.out.print("flightnum       Origin                  Destination             ");
+				System.out.print("Departure Seats     Booked   Available\n");
 				for (int i = 0; i < r.size(); i++) {
 					for (int j = 0; j < r.get(i).size(); j++) {
 						if (j != 3) {
