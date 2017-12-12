@@ -338,7 +338,7 @@ public class AirBooking{
 
             int m;
 			do { 
-                System.out.print("Enter your birth month as a number between 1 and 12: ");
+                System.out.print("Enter your birth month: ");
                 
                 try {
 					String month = br.readLine();
@@ -386,7 +386,7 @@ public class AirBooking{
 					String year = br.readLine();
 					y = Integer.parseInt(year);
 					if (y < 1900 || y > 2020) {
-						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.");
+						System.out.println("\nInvalid Input. " + y + " isn't between 1889 and 2021.");
                     }
                     else if (year.length() == 0) {
                         System.out.println("\nInvalid input. Year cannot be empty.");	
@@ -513,7 +513,7 @@ public class AirBooking{
 					String year = br.readLine();
 					y = Integer.parseInt(year);
 					if (y < 1900 || y > 2020) {
-						System.out.println("\nInvalid input. " + y + " must be greater than 0.\n");
+						System.out.println("\nInvalid input. " + y + " isn't between 1889 and 2021.\n");
                     }
                     else if (year.length() == 0) {
                         System.out.println("\nInvalid input. Year cannot be empty.");	
@@ -1025,7 +1025,7 @@ public class AirBooking{
 					String year = br.readLine();
 					y = Integer.parseInt(year);
 					if (y < 1900 || y > 2020) {
-						System.out.println("\nInvalid Input. " + y + " isn't between 1 and 31.\n");
+						System.out.println("\nInvalid Input. " + y + " isn't between 1889 and 2021.\n");
                     }
                     else if (year.length() == 0) {
                         System.out.println("\nYear cannot be empty");
@@ -1040,8 +1040,8 @@ public class AirBooking{
 			String date = m + "/" + d + "/" + y;
 
 			String query = "SELECT DISTINCT F.flightNum, F.origin, F.destination, B.departure, ";
-			query += "F.seats AS \"total seats\", COUNT(F.flightNum) AS \"booked seats\", ";
-			query += "F.seats - COUNT(F.flightNum) as \"available seats\" ";
+			query += "F.seats AS \"total seats\", COUNT(B.flightNum) AS \"booked seats\", ";
+			query += "F.seats - COUNT(B.flightNum) as \"available seats\" ";
 			query += "FROM Booking B, Flight F ";
 			query += "WHERE F.flightNum = '" + flightNum + "' AND ";
 			query += "B.flightNum = F.flightNum AND ";
@@ -1058,7 +1058,7 @@ public class AirBooking{
 				query += "Flight.seats AS \"available seats\" ";
 				query += "FROM Flight ";
 				query += "LEFT JOIN Booking on Booking.flightNum = Flight.flightNum ";
-				query += "WHERE Flight.flightNum = '" + flightNum + "' ";
+				query += "WHERE Booking.flightNum = '" + flightNum + "' ";
 				query += "GROUP BY Booking.departure, Flight.flightNum ";
 				List<List<String> > r = esql.executeQueryAndReturnResult(query);
 				
