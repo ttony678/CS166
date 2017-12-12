@@ -1,3 +1,35 @@
-Cannot add 2 passengers with same passport number.
-Passenger cannot review same flight twice.
-Creation of table on FindNumberOfAvailableSeatsForFlight even when no information presented that has 0 as booked seats.
+Documentation for AirBooking
+============================
+
+Assumptions
+-----------
+
+1. We assumed that this program is being developed for use by an agent working for a travel agency, and not as a web interface or
+   mobile app the customers use to book flights.
+2. This means that the user must satisfy certain "access requirements" in order to be able to use the program effectively. For 
+   instance, the user must know the passengerID of a passenger before making a new flight booking. Normally in a commercial 
+   program, it would be very user-UNfriendly to require that a passenger know an abstract ID number generated for them. Instead, 
+   they would be required to provide their login credentials, which would be easier to remember.
+3. (1) and (2) greatly reduced the error-checking and edge-case coverage we implemented to only those errors that a travel 
+   agent would make.
+4. Confirmations on entry make a database much easier to work with. They allow for error-on-entry checking, reduce long-term 
+   problems caused by human error in data entry, and improve peace of mind. Whenever information is successfully added to the
+   database, the newly-entered information is immediately queried and printed back out for the user to verify.
+5. Apart from accounting for errors and edge cases, no further enhancements or alterations have been made to the base schema. The 
+   database and user interface sould behave exactly as required by the specification.
+
+
+Implementation
+--------------
+
+1. When creating a new passenger, you cannot use the same passport number more than once.
+2. Each passenger can only review a flight once, and only if they actually were booked for the flight.
+3. Creation of table on FindNumberOfAvailableSeatsForFlight even when no information presented that has 0 as booked seats.
+4. Entering dates (such as for querying flights) has been divided into entering month, day, and year separately. Cecks are made to
+   ensure that entered information fits month, day, and year parameters (i.e. no negative numbers, etc).
+5. For consistency in entered data, full names, origin names, and destination names are all corrected to capitalize the first 
+   letter of each word.
+6. Whenever using PIDs or flightNums for queries, pre-queries are first made to verify that those values exist at all. If the
+   value does not exist, then the original query is not made.
+7. flightNum and PID are used very often for many of the operations in this program. To speed up usage, indexes have been made for
+   PID and flightNum.
