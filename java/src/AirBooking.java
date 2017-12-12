@@ -423,7 +423,7 @@ public class AirBooking{
 			List<List<String>> r = esql.executeQueryAndReturnResult(query);
 			
 			// Formatting output
-			System.out.print("pid passnum    fullname                 birthday country\n");
+			System.out.print("pID PassNum    Fullname                 Birthday  Country\n");
 			for (int i = 0; i < r.size(); i++) {
 				for (int j = 0; j < r.get(i).size(); j++) {
 					if (j != 3) {
@@ -571,7 +571,7 @@ public class AirBooking{
 			List<List<String>> r = esql.executeQueryAndReturnResult(query);
 			
 			// Formatting output
-			System.out.print("bookRef       departure flightNum   pid\n");
+			System.out.print("BookRef       Departure FlightNum   pID\n");
 			for (int i = 0; i < r.size(); i++) {
 				for (int j = 0; j < r.get(i).size(); j++) {
 					if (j != 1) {
@@ -688,7 +688,7 @@ public class AirBooking{
 			List<List<String>> s = esql.executeQueryAndReturnResult(query);
 			
 			// Formatting output
-			System.out.print("rID        pID      flightNum       Score    Comment\n");
+			System.out.print("rID        pID      FlightNum       Score    Comment\n");
 			for (int i = 0; i < s.size(); i++) {
 				for (int j = 0; j < s.get(i).size(); j++) {
 						System.out.print(s.get(i).get(j) + "        ");
@@ -763,7 +763,7 @@ public class AirBooking{
 			// Formatting output
 			if (rowCount != 0)
 			{
-				System.out.print("flightNum Origin            Destination       Plane             Duration\n");
+				System.out.print("FlightNum Origin            Destination       Plane             Duration\n");
 					for (int i = 0; i < r.size(); i++) {
 						for (int j = 0; j < r.get(i).size(); j++) {
 								System.out.print(r.get(i).get(j) + "  ");
@@ -810,7 +810,7 @@ public class AirBooking{
 			// Formatting output
 			if (rowCount != 0)
 			{
-				System.out.print("Count   Destination            \n");
+				System.out.print("Count    Destination\n");
 					for (int i = 0; i < r.size(); i++) {
 						for (int j = 0; j < r.get(i).size(); j++) {
 								System.out.print(r.get(i).get(j) + "       ");
@@ -858,7 +858,7 @@ public class AirBooking{
 			// Formatting output
 			if (rowCount != 0)
 			{
-				System.out.print("Airline Name                   flightNum      Origin                 Destination            Plane                  Score\n");
+				System.out.print("Airline Name                   FlightNum      Origin                 Destination            Plane                  Score\n");
 					for (int i = 0; i < r.size(); i++) {
 						for (int j = 0; j < r.get(i).size(); j++) {
 								System.out.print(r.get(i).get(j) + "       ");
@@ -934,14 +934,17 @@ public class AirBooking{
 			// Formatting output
 			if (rowCount != 0)
 			{
-				System.out.print("Airline Name                   flightNum      Origin                 Destination            Plane                  Duration\n");
+				System.out.print("Airline Name               FlightNum  Origin             Destination        Plane              Duration\n");
 					for (int i = 0; i < r.size(); i++) {
 						for (int j = 0; j < r.get(i).size(); j++) {
-								System.out.print(r.get(i).get(j) + "       ");
+								System.out.print(r.get(i).get(j) + "   ");
 						}
 						System.out.println();
 					}
 				// END NEW STUFF
+			}
+			else {
+				System.out.println("\nThere are no flights between " + origin + " and " + destination + ".");
 			}
 			
         } catch(Exception e) {
@@ -1045,7 +1048,8 @@ public class AirBooking{
 			query += "B.departure = '" + date + "' ";
 			query += "GROUP BY B.departure, F.flightNum ";
 
-			int rowCount = esql.executeQueryAndPrintResult(query);
+			int rowCount = esql.executeQuery(query);
+			
 			if (rowCount == 0) {
 				// If unbooked flight make sure we tell there are 0 booked flights so far. 
 				query = "SELECT Flight.flightNum, Flight.origin, Flight.destination, ";
@@ -1058,15 +1062,33 @@ public class AirBooking{
 				query += "GROUP BY Booking.departure, Flight.flightNum ";
 				List<List<String> > r = esql.executeQueryAndReturnResult(query);
 				
-				System.out.print("flightnum       Origin                  Destination             ");
-				System.out.print("Departure Seats     Booked   Available\n");
+				System.out.print("Flightnum       Origin                  Destination             ");
+				System.out.print("Departure Seats      Booked   Available\n");
 				for (int i = 0; i < r.size(); i++) {
 					for (int j = 0; j < r.get(i).size(); j++) {
 						if (j != 3) {
 							System.out.print(r.get(i).get(j) + "        ");
 						}
 						else {
-							System.out.print(date + " ");
+							System.out.print(date + "  ");
+						}
+					}
+					System.out.println();
+				}
+			}
+			else {
+				// Formatting when having unempty results.
+				List<List<String> > r = esql.executeQueryAndReturnResult(query);
+				
+				System.out.print("Flightnum       Origin                  Destination             ");
+				System.out.print("Departure   Seats      Booked   Available\n");
+				for (int i = 0; i < r.size(); i++) {
+					for (int j = 0; j < r.get(i).size(); j++) {
+						if (j != 3) {
+							System.out.print(r.get(i).get(j) + "        ");
+						}
+						else {
+							System.out.print(date + "  ");
 						}
 					}
 					System.out.println();
