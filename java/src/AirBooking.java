@@ -571,15 +571,10 @@ public class AirBooking{
 			List<List<String>> r = esql.executeQueryAndReturnResult(query);
 			
 			// Formatting output
-			System.out.print("BookRef       Departure FlightNum   pID\n");
+			System.out.print("BookRef       Departure     FlightNum   pID\n");
 			for (int i = 0; i < r.size(); i++) {
 				for (int j = 0; j < r.get(i).size(); j++) {
-					if (j != 1) {
-						System.out.print(r.get(i).get(j) + "    ");
-					}
-					else {
-						System.out.print(date + "  ");
-					}
+					System.out.print(r.get(i).get(j) + "    ");
 				}
 				System.out.println();
 			}
@@ -688,10 +683,15 @@ public class AirBooking{
 			List<List<String>> s = esql.executeQueryAndReturnResult(query);
 			
 			// Formatting output
-			System.out.print("rID        pID      FlightNum       Score    Comment\n");
+			System.out.print("rID     pID     FlightNum       Score    Comment\n");
 			for (int i = 0; i < s.size(); i++) {
 				for (int j = 0; j < s.get(i).size(); j++) {
+					if (j == 0 || j == 1) {
+						System.out.print(s.get(i).get(j) + "\t");
+					}
+					else {
 						System.out.print(s.get(i).get(j) + "        ");
+					}
 				}
 				System.out.println();
 			}
@@ -763,7 +763,7 @@ public class AirBooking{
 			// Formatting output
 			if (rowCount != 0)
 			{
-				System.out.print("FlightNum Origin            Destination       Plane             Duration\n");
+				System.out.print("FlightNum Origin            Destination       Plane             Duration (hrs)\n");
 					for (int i = 0; i < r.size(); i++) {
 						for (int j = 0; j < r.get(i).size(); j++) {
 								System.out.print(r.get(i).get(j) + "  ");
@@ -934,7 +934,7 @@ public class AirBooking{
 			// Formatting output
 			if (rowCount != 0)
 			{
-				System.out.print("Airline Name               FlightNum  Origin             Destination        Plane              Duration\n");
+				System.out.print("Airline Name               FlightNum  Origin             Destination        Plane              Duration(hrs)\n");
 					for (int i = 0; i < r.size(); i++) {
 						for (int j = 0; j < r.get(i).size(); j++) {
 								System.out.print(r.get(i).get(j) + "   ");
@@ -1081,15 +1081,10 @@ public class AirBooking{
 				List<List<String> > r = esql.executeQueryAndReturnResult(query);
 				
 				System.out.print("Flightnum       Origin                  Destination             ");
-				System.out.print("Departure   Seats      Booked   Available\n");
+				System.out.print("Departure         Seats      Booked   Available\n");
 				for (int i = 0; i < r.size(); i++) {
 					for (int j = 0; j < r.get(i).size(); j++) {
-						if (j != 3) {
-							System.out.print(r.get(i).get(j) + "        ");
-						}
-						else {
-							System.out.print(date + "  ");
-						}
+						System.out.print(r.get(i).get(j) + "        ");
 					}
 					System.out.println();
 				}
