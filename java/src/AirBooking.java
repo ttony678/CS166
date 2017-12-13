@@ -1058,7 +1058,7 @@ public class AirBooking{
 				query += "Flight.seats AS \"available seats\" ";
 				query += "FROM Flight ";
 				query += "LEFT JOIN Booking on Booking.flightNum = Flight.flightNum ";
-				query += "WHERE Booking.flightNum = '" + flightNum + "' ";
+				query += "WHERE Flight.flightNum = '" + flightNum + "' ";
 				query += "GROUP BY Booking.departure, Flight.flightNum ";
 				List<List<String> > r = esql.executeQueryAndReturnResult(query);
 				
